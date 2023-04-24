@@ -3,6 +3,7 @@ import Router, {RouterContext} from "koa-router";
 import logger from "koa-logger";
 import json from "koa-json";    
 import bodyParser from "koa-bodyparser";
+import serve from 'koa-static-server';
 import {router as articles} from "./routes/articles";
 
 const app: Koa = new Koa();

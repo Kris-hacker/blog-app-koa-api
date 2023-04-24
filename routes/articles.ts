@@ -2,10 +2,10 @@ import * as model from "../models/articles";
 import Router, {RouterContext} from "koa-router";
 import bodyParser from "koa-bodyparser";
 import { basicAuth } from "../controllers/auth";
+// import {validateArticle} from '../controllers/validation';
 
 // Since we are handling articles use a URI that begins with an appropriate path
 const router = new Router({prefix: '/api/v1/articles'});
-
 // Now we define the handler functions
 const getAll = async (ctx: RouterContext, next: any) => {
     let articles = await model.getAll();
@@ -57,22 +57,21 @@ const updateArticle = async (ctx: RouterContext, next: any) => {
 
 const deleteArticle = async (ctx: RouterContext, next: any) => {
     let id = ctx.params.id;
-    let update_article = await model.deleteById(id);
+    await model.deleteById(id);
     let article = await model.getById(id);
     ctx.body = article;
     ctx.status = 200;  
     if (article.length){
     } else {
-        ctx.body = `delete [id:${id}] success`
+        ctx.body = `id:${id} deleted success`
     }
     await next();
 }
 
 router.get('/', getAll);
-router.get('/private',basicAuth, getAll);
-router.post('/',basicAuth, bodyParser(), createArticle);
 router.get('/:id([0-9]{1,})', getById);
-router.put('/:id([0-9]{1,})',basicAuth,bodyParser(), updateArticle);
+router.post('/',basicAuth, bodyParser(), createArticle);
+router.put('/:id([0-9]{1,})',basicAuth,bodyParser(),updateArticle);
 router.del('/:id([0-9]{1,})',basicAuth, deleteArticle);
 
 export { router };
