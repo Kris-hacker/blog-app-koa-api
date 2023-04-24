@@ -1,6 +1,7 @@
 import * as model from "../models/articles";
 import Router, {RouterContext} from "koa-router";
 import bodyParser from "koa-bodyparser";
+import { basicAuth } from "../controllers/auth";
 
 // Since we are handling articles use a URI that begins with an appropriate path
 const router = new Router({prefix: '/api/v1/articles'});
@@ -68,9 +69,10 @@ const deleteArticle = async (ctx: RouterContext, next: any) => {
 }
 
 router.get('/', getAll);
-router.post('/', bodyParser(), createArticle);
+router.get('/private',basicAuth, getAll);
+router.post('/',basicAuth, bodyParser(), createArticle);
 router.get('/:id([0-9]{1,})', getById);
-router.put('/:id([0-9]{1,})',bodyParser(), updateArticle);
-router.del('/:id([0-9]{1,})', deleteArticle);
+router.put('/:id([0-9]{1,})',basicAuth,bodyParser(), updateArticle);
+router.del('/:id([0-9]{1,})',basicAuth, deleteArticle);
 
 export { router };
